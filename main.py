@@ -3,6 +3,7 @@ from random import randint
 from time import sleep, time
 from datetime import datetime
 from modules.connect_tapo_plugs import *
+from modules.temperature import *
 
 heater = None
 filename = "./src/config.json"
@@ -21,12 +22,12 @@ def get_timestamp():
 
 # Example usage:
 
-data = {
-    "time": get_timestamp(),
-    "temperature": randint(0, 100),
-    "humidity": randint(40, 100),
-    "pressure": randint(990, 1100)
-}
+# data = {
+#     "time": get_timestamp(),
+#     "temperature": randint(0, 100),
+#     "humidity": randint(40, 100),
+#     "pressure": randint(990, 1100)
+# }
 
 
 def init_cooler_and_heater():
@@ -41,6 +42,9 @@ def init_cooler_and_heater():
 
 if __name__ == '__main__':
     cooler, heater = init_cooler_and_heater()
+    a, b = get_sensor_temp().values()
+
+
 
     # while True:
     #     json_data = wrap_into_json(data)
