@@ -19,3 +19,7 @@ def get_sensor_temp():
 #     while True:
 #         get_sensor_temp()
 #         sleep(sleep_time)
+
+
+def set_temperature():
+    pass
