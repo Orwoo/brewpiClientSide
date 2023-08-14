@@ -30,21 +30,19 @@ def get_timestamp():
 # }
 
 
-def init_cooler_and_heater():
-    if config:
-        cooler_creds = get_credentials(config, "cooler")
-        _cooler = connect_to_p100(cooler_creds['ip'], cooler_creds['email'], cooler_creds['pw'])
-
-        heater_creds = get_credentials(config, "heater")
-        _heater = connect_to_p100(heater_creds['ip'], heater_creds['email'], heater_creds['pw'])
-        return _cooler, _heater
+# def init_cooler_and_heater():
+#     if config:
+#         cooler_creds = get_credentials(config, "cooler")
+#         _cooler = connect_to_p100(cooler_creds['ip'], cooler_creds['email'], cooler_creds['pw'])
+#
+#         heater_creds = get_credentials(config, "heater")
+#         _heater = connect_to_p100(heater_creds['ip'], heater_creds['email'], heater_creds['pw'])
+#         return _cooler, _heater
 
 
 if __name__ == '__main__':
-    cooler, heater = init_cooler_and_heater()
-    a, b = get_sensor_temp().values()
-
-
+    # cooler, heater = init_cooler_and_heater()
+    pass
 
     # while True:
     #     json_data = wrap_into_json(data)
