@@ -61,3 +61,7 @@ def connect_to_p100(ip, mail, pw):
     sleep(1)
     p100.turnOff()
     return p100
+
+# TODO: shortening of init procedure
+# TODO: reconnect, if connection breaks
+# TODO: connection loop and specific connection error. Maybe with logging

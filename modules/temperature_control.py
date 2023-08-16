@@ -2,7 +2,7 @@ from time import sleep
 from modules.temperature import get_sensor_temp
 from modules.connect_tapo_plugs import read_config, get_credentials, connect_to_p100
 
-filename = "./src/config.json"
+filename = "../src/config.json"
 config = read_config(filename)
 
 
@@ -16,7 +16,7 @@ def init_cooler_and_heater():
         return [_cooler, _heater]
 
 
-def control_temp(temp_set, th_outer=1, th_set=1):
+def control_temp(temp_set, th_outer=2, th_set=1):
     cooler, heater = init_cooler_and_heater()
     inner, outer = get_sensor_temp()
 
@@ -27,7 +27,7 @@ def control_temp(temp_set, th_outer=1, th_set=1):
                 # the heat is on
                 heater.turnOn()
                 print("now heating")
-                print(f"inner: {inner}, outer: {outer}, set: {temp_set}")
+                print(f"inner: {inner}, outer: {outer}, set: {temp_set}")  # TODO: temp logging here?
                 if inner > outer + th_outer:
                     heater.turnOff()
                     print("too hot")
@@ -54,3 +54,6 @@ def control_temp(temp_set, th_outer=1, th_set=1):
 
 
 control_temp(18)
+
+
+# TODO: get temp_set from file
