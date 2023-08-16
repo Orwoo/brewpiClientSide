@@ -1,6 +1,7 @@
 from time import sleep
-from modules.temperature import get_sensor_temp
+from modules.client_server_communication import get_temp_set
 from modules.connect_tapo_plugs import read_config, get_credentials, connect_to_p100
+from modules.temperature import get_sensor_temp
 
 filename = "../src/config.json"
 config = read_config(filename)
@@ -16,9 +17,10 @@ def init_cooler_and_heater():
         return [_cooler, _heater]
 
 
-def control_temp(temp_set, th_outer=2, th_set=1):
+def control_temp(th_outer=2, th_set=1):
     cooler, heater = init_cooler_and_heater()
     inner, outer = get_sensor_temp()
+    temp_set, th_set, th_outer = get_temp_set().split(",")
 
     if inner not in range(temp_set - th_set, temp_set + th_set):
         if inner < temp_set - th_set:
