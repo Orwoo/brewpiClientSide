@@ -54,13 +54,16 @@ def connect_to_p100(ip, mail, pw):
     print("handshake and login: ok")
     print("toggle states")
     p100.toggleState()
-    sleep(2)
+    sleep(1)
     p100.toggleState()
     print("init done!")
     print("now turning plug off")
     sleep(1)
     p100.turnOff()
     return p100
+
+
+
 
 # TODO: shortening of init procedure
 # TODO: reconnect, if connection breaks
