@@ -24,11 +24,14 @@ def init_cooler_and_heater():
 def exception_handling_plugs(plug_function):
     while True:
         try:
+            print("break 5")
             plug_function
+            print("break 6")
             break
         except Exception:
+            print("break 7")
             global cooler, heater
-            print("Error while regulating. Connection lost? Trying to reconcet in 5s.")
+            print("Error while regulating. Connection lost? Trying to reconncet in 5s.")
             sleep(5)
             cooler, heater = init_cooler_and_heater()
 
@@ -46,8 +49,9 @@ def control_temp():
             while inner < temp_set - th_set and outer < inner + th_outer:
                 inner, outer = get_sensor_temp()
                 # the heat is on
-
+                print("break 1")
                 exception_handling_plugs(heater.turnOn())
+                print("break 2")
 
                 print("now heating")
                 print(f"inner: {inner}, outer: {outer}, set: {temp_set}")  # TODO: temp logging here?
@@ -62,8 +66,9 @@ def control_temp():
             while inner > temp_set + th_set and outer > inner - th_outer:
                 inner, outer = get_sensor_temp()
                 # now cooling
-
+                print("break 3")
                 exception_handling_plugs(cooler.turnOn())
+                print("break 4")
 
                 print("now cooling")
                 print(f"inner: {inner}, outer: {outer}, set: {temp_set}")
