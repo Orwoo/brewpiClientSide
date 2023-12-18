@@ -1,11 +1,9 @@
-import asyncio
-import socket
-from time import sleep
-from modules.client_server_communication import get_temp_set
 from modules.connect_tapo_plugs import read_config, get_credentials, connect_to_p100
-from modules.temperature import get_sensor_temp
+from modules.temperature import get_sensor_temp, get_temp_set
+from time import sleep
 
-filename = "../src/config.json"
+
+filename = "src/config.json"
 config = read_config(filename)
 
 sleep_while_regulation = 6
@@ -13,48 +11,51 @@ sleep_until_next_measure = 120
 
 def init_cooler_and_heater():
     if config:
-        cooler_creds = get_credentials(config, "cooler")
-        _cooler = connect_to_p100(cooler_creds['ip'], cooler_creds['email'], cooler_creds['pw'])
+        while True:
+            try:
+                cooler_creds = get_credentials(config, "cooler")
+                _cooler = connect_to_p100(cooler_creds['ip'], cooler_creds['email'], cooler_creds['pw'])
 
-        heater_creds = get_credentials(config, "heater")
-        _heater = connect_to_p100(heater_creds['ip'], heater_creds['email'], heater_creds['pw'])
-        return [_cooler, _heater]
+                heater_creds = get_credentials(config, "heater")
+                _heater = connect_to_p100(heater_creds['ip'], heater_creds['email'], heater_creds['pw'])
+                return [_cooler, _heater]
+            except Exception as e:
+                print("Connecting Tapos failed. Retry in 5s")
+                print(e)
+                sleep(5)
+                continue
 
 
 def exception_handling_plugs(plug_function):
     while True:
         try:
-            print("break 5")
             plug_function
-            print("break 6")
             break
-        except Exception:
-            print("break 7")
+        except Exception as e:
             global cooler, heater
             print("Error while regulating. Connection lost? Trying to reconncet in 5s.")
             sleep(5)
             cooler, heater = init_cooler_and_heater()
+            print(f"exception_handling_plugs:\n{e}")
 
 
 def control_temp():
     global cooler, heater
     inner, outer = get_sensor_temp()
-    temp_set, th_set, th_outer = get_temp_set().split(",")
-    temp_set = int(temp_set)
-    th_set = int(th_set)
-    th_outer = int(th_outer)
+    temp_set, th_set, th_outer, controller_state = get_temp_set().split(",")
+    temp_set = float(temp_set)
+    th_set = float(th_set)
+    th_outer = float(th_outer)
 
-    if inner not in range(temp_set - th_set, temp_set + th_set):
+    if not (temp_set - th_set <= inner <= temp_set + th_set):
         if inner < temp_set - th_set:
             while inner < temp_set - th_set and outer < inner + th_outer:
                 inner, outer = get_sensor_temp()
                 # the heat is on
-                print("break 1")
                 exception_handling_plugs(heater.turnOn())
-                print("break 2")
 
                 print("now heating")
-                print(f"inner: {inner}, outer: {outer}, set: {temp_set}")  # TODO: temp logging here?
+                print(f"inner: {inner}, outer: {outer}, set: {temp_set}")
                 if inner > outer + th_outer:
                     heater.turnOff()
                     print("too hot")
@@ -66,10 +67,7 @@ def control_temp():
             while inner > temp_set + th_set and outer > inner - th_outer:
                 inner, outer = get_sensor_temp()
                 # now cooling
-                print("break 3")
                 exception_handling_plugs(cooler.turnOn())
-                print("break 4")
-
                 print("now cooling")
                 print(f"inner: {inner}, outer: {outer}, set: {temp_set}")
                 if inner < outer - th_outer:
@@ -88,13 +86,11 @@ if __name__ == "__main__":
         try:
             cooler, heater = init_cooler_and_heater()
             break
-        except Exception:
+        except Exception as e:
             print("Init of power plugs failed. Are they connected? Retry in 5s.")
+            print(f"Main loop:\n{e}")
             sleep(5)
 
     while True:
         control_temp()
         sleep(sleep_until_next_measure)
-
-
-# TODO: error handling for sensors and plugs

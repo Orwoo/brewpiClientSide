@@ -14,8 +14,9 @@ def get_sensor_temp():
                 temperature_in_celsius = sensor.get_temperature()
                 sensors_temp.append(round(temperature_in_celsius, 2))
                 break
-            except Exception:
+            except Exception as e:
                 print("Trying to get sensor data in 5s.")
+                print(e)
                 sleep(5)
         # name = "inner" if "0b2280a" in sensor.id else "outer"
         # print("Sensor %s has temperature %.2f" % (name, temperature_in_celsius))
@@ -23,20 +24,21 @@ def get_sensor_temp():
 
 
 def get_temp_set():
-    with open("../src/temp_set", "r") as f:
+    with open("./src/temp_set", "r") as f:
         try:
             return f.readlines()[1]
-        except IndexError:
+        except IndexError as e:
             print("reading temp_set failed. Couldn't find any values")
-            print("setting temp_set to 15,1,1")
-            return "15,1,1"
+            print("setting temp_set to 15,1,1,off")
+            print(e)
+            return "15,1,1,off"
 
 
 def write_temp_set_to_file(_data):
     if _data:
-        with open('../src/temp_set', 'w') as f:
+        with open('./src/temp_set', 'w') as f:
             print(f"writing new temperatures: {_data}")
-            f.write("temp_set,threshold_set,threshold_outer\n")
+            f.write("temp_set,threshold_set,threshold_outer,controller_state\n")
             f.write(_data)
     else:
         print("No data found. Nothing written")

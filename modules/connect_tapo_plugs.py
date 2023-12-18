@@ -10,10 +10,10 @@ def read_config(file):
             data = json.load(file)
             return data
 
-    except json.JSONDecodeError:
+    except json.JSONDecodeError as e:
         print("Error decoding JSON.")
         return None
-    except FileNotFoundError:
+    except FileNotFoundError as e:
         print(f"File '{file}' not found.")
         return None
 
@@ -62,9 +62,5 @@ def connect_to_p100(ip, mail, pw):
     p100.turnOff()
     return p100
 
-
-
-
-# TODO: shortening of init procedure
 # TODO: reconnect, if connection breaks
 # TODO: connection loop and specific connection error. Maybe with logging
