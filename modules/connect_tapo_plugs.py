@@ -33,18 +33,6 @@ def get_credentials(conf_file, user):
     return result
 
 
-# def _display_credentials(credentials_data):
-#     user = credentials_data['user']
-#     ip = credentials_data['ip']
-#     email = credentials_data['email']
-#     pw = credentials_data['pw']  # Reminder: This is insecure.
-#     print(f"User: {user}")
-#     print(f"IP: {ip}")
-#     print(f"Email: {email}")
-#     print("Password:", '*' * len(pw) if pw else None)
-#     print("------")
-
-
 def connect_to_p100(ip, mail, pw):
     print("----------------")
     print(f"connecting P100 (ip: {ip})")
